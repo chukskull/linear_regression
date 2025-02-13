@@ -7,7 +7,7 @@ class LinearRegression1337:
     def __init__(self):
         self.theta = np.zeros(2)
         self.iterations = 1000
-        self.data = pd.read_csv('data_v2.csv')
+        self.data = pd.read_csv('data.csv')
         self.alpha = 0.01  # learning rate
         self.m = len(self.data)
         self.x1 = np.array(self.data['km'])
@@ -34,11 +34,11 @@ class LinearRegression1337:
         return self.theta
 
     def predict(self, x):
-        # Normalize the data
+        #Normalize the data
         x_standardized = (x - self.mean_x1) / self.std_x1
         X_pred = np.vstack((np.ones(len(x_standardized)), x_standardized)).T
         y_pred_standardized = X_pred.dot(self.theta)
-        # Reverse normalization for prediction
+        #Reverse normalization for prediction
         return y_pred_standardized * self.std_y1 + self.mean_y1
 
     def plot_fit(self):
@@ -80,11 +80,10 @@ class LinearRegression1337:
         return theta0_original, theta1_original
 
 def main():
-    # Create and fit model
     model = LinearRegression1337()
     theta = model.fit()
     thetas = model.get_thatas()
-    # Save thetas to a JSON file
+
     thetas_dict = {"theta0": thetas[0], "theta1": thetas[1]}
     with open("thetas.json", "w") as json_file:
         json.dump(thetas_dict, json_file)
@@ -92,18 +91,15 @@ def main():
     print(f"Fitted coefficients (standardized theta): {theta[0]}, {theta[1]}")
     print(f"Coefficients on real data scale: {thetas[0]}, {thetas[1]}")
     
-    # Plot the fit
     model.plot_fit()
     
-    # Predict based on original km values and save predictions
     predictions = model.predict(np.array(model.data['km']))
     pd.DataFrame(predictions, index=model.data['price'], columns=["Predictions"]).to_csv("predicted.csv")
     
-    # Print model metrics
     model.print_metrics()
     
-    # Example of making a prediction for a particular km value (e.g., 3650 km)
-    print(f"Prediction for 3650 km: {3650 * thetas[1] + thetas[0]}")
+    # Example of making a prediction for a particular km value (e.g., 240000 km)
+    print(f"Prediction for 240000 km: {240000 * thetas[1] + thetas[0]}")
 
 if __name__ == '__main__':
     main()
